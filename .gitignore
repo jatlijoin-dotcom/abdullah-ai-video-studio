@@ -1,0 +1,10 @@
+node_modules/
+.env
+storage/*.db
+storage/*.db-wal
+storage/*.db-shm
+storage/projects/*
+storage/characters/*
+storage/tmp/*
+storage/music/*
+!storage/music/README.md

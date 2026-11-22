@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    container_name: abdullah-ai-video-studio
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_PATH=/app/storage/studio.db
+      - STORAGE_PATH=/app/storage
+    volumes:
+      # Persistent data: SQLite DB, character images, generated videos.
+      - ./storage:/app/storage
+    restart: unless-stopped
