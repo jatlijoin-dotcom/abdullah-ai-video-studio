@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Abdullah AI Video Studio — aik prompt se poori AI video: storyboard, dialogue, awaaz, music aur MP4 download.">
+<title>Abdullah AI Video Studio</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-title">Abdullah AI Video Studio</div>
+    <div class="brand-sub">Aik prompt → poori video (storyboard, dialogue, awaaz, music, MP4)</div>
+  </div>
+  <span id="demoBadge" class="badge badge-demo">Demo Mode</span>
+</header>
+
+<div id="demoBanner" class="banner banner-demo">
+  <strong>Demo Mode chal raha hai.</strong>
+  Asli AI video ke liye deployed backend + provider key chahiye hoti hai.
+  Demo Mode mein aap ko video nahi, <strong>poora storyboard plan</strong> milta hai —
+  scenes, dialogue, awaaz aur scene prompts — jo download kar sakte hain.
+  Ye plan <strong>video nahi hai (NOT a video)</strong>.
+</div>
+
+<main id="main">
+  <!-- ================= HOME ================= -->
+  <section id="tab-home" class="panel active" aria-label="Home">
+    <h1>Abdullah AI Video Studio</h1>
+    <p class="lead">Aik kahani likhein — app us ka poora plan banata hai: scenes, camera,
+      dialogue, narration, subtitles aur music. Jab provider key judi ho to
+      aik final MP4 video banti hai jo phone par download ho jati hai.</p>
+
+    <h2>Ye app kya karta hai</h2>
+    <ul class="features">
+      <li><strong>2 modes:</strong> 3D Cartoon aur Realistic Cinematic</li>
+      <li><strong>3 zubanein:</strong> Urdu, Hindi, English (narration + dialogue)</li>
+      <li><strong>30 ya 60 second</strong> video — 9:16 (Shorts) ya 16:9</li>
+      <li><strong>Character Lock:</strong> Abdullah har scene mein aik jaisa dikhta hai — wahi chehra, baal, daadhi, kala Levi's hoodie, neeli jeans, blue-grey sneakers</li>
+      <li><strong>Alag awaazein:</strong> har character ki apni AI voice — dialogue narration se alag hota hai</li>
+      <li><strong>Subtitles + music:</strong> Roman Urdu captions aur background music</li>
+      <li><strong>Smooth transitions:</strong> scenes aik doosre se jud kar aik MP4 bante hain</li>
+      <li><strong>Qeemat pehle:</strong> Generate se pehle poori cost table dikhti hai</li>
+    </ul>
+
+    <h2>Quick start (2 minute)</h2>
+    <ol class="steps">
+      <li><strong>Create</strong> tab kholein aur apni kahani likhein.</li>
+      <li>Mode, duration, aspect, quality aur zubaan chunein.</li>
+      <li><strong>Qeemat dekhein</strong> dabayein — cost table dikhegi (Demo Mode mein bhi).</li>
+      <li><strong>Video banayein</strong> dabayein — progress dekhein, phir storyboard dekhein.</li>
+      <li>Demo Mode mein <strong>demo plan download</strong> karein (ye video nahi hai). Asli MP4 sirf provider key ke saath banta hai.</li>
+    </ol>
+
+    <div class="card">
+      <h2>Demo Mode kya hai?</h2>
+      <p>Demo Mode mein koi provider key nahi hoti, is liye koi AI clip nahi banti aur
+        koi paisa kharch nahi hota. Aap ko <strong>asli storyboard</strong> milta hai —
+        har scene ka setting, action, camera, narration, dialogue (speaker + voice ke
+        saath) aur video prompt — aur aik downloadable plan. Asli video ke liye
+        Settings mein backend jorein aur provider key lagayein (approval ke baad).</p>
+      <p class="muted">Model: <code>gemini-omni-1.2-flash</code> (current). Veo 3.1 Preview band ho
+        chuka hai (22 Oct 2026) — use nahi hota.</p>
+    </div>
+
+    <div class="card">
+      <h2>Backend status</h2>
+      <p id="homeHealth" class="muted">Check ho raha hai…</p>
+      <p><button id="homeTestBtn" class="btn btn-secondary" type="button">Connection dobara check karein</button></p>
+    </div>
+  </section>
+
+  <!-- ================= CREATE ================= -->
+  <section id="tab-create" class="panel" aria-label="Create">
+    <h1>Video banayein</h1>
+
+    <label class="field">
+      <span class="label">Kahani ka prompt (aik line mein likhein)</span>
+      <textarea id="promptInput" rows="3" maxlength="500"
+        placeholder="Misal: Abdullah jungle mein apne abbu ko sher se bachata hai"></textarea>
+      <span class="hint">Kam az kam 3 characters. Kahani, hero aur moral — sab aik line mein.</span>
+    </label>
+
+    <div class="grid2">
+      <fieldset class="field">
+        <legend>Mode</legend>
+        <div class="seg" id="modeSeg">
+          <button type="button" data-value="cartoon" class="seg-btn active">3D Cartoon</button>
+          <button type="button" data-value="realistic" class="seg-btn">Realistic Cinematic</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Duration</legend>
+        <div class="seg" id="durationSeg">
+          <button type="button" data-value="30" class="seg-btn">30 second</button>
+          <button type="button" data-value="60" class="seg-btn active">60 second</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Format (aspect)</legend>
+        <div class="seg" id="aspectSeg">
+          <button type="button" data-value="9:16" class="seg-btn active">9:16 (Shorts)</button>
+          <button type="button" data-value="16:9" class="seg-btn">16:9</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Quality</legend>
+        <div class="seg" id="qualitySeg">
+          <button type="button" data-value="720p" class="seg-btn active">720p</button>
+          <button type="button" data-value="1080p" class="seg-btn">1080p</button>
+          <button type="button" data-value="4K" class="seg-btn">4K (upscaled)</button>
+        </div>
+        <span class="hint">4K upscale hota hai — native 4K nahi.</span>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Zubaan (language)</legend>
+        <div class="seg" id="languageSeg">
+          <button type="button" data-value="ur" class="seg-btn active">Urdu</button>
+          <button type="button" data-value="hi" class="seg-btn">Hindi</button>
+          <button type="button" data-value="en" class="seg-btn">English</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Character</legend>
+        <select id="characterSelect" class="input">
+          <option value="">Koi character nahi (default Abdullah)</option>
+        </select>
+        <span class="hint">Characters tab mein apna character banayein — us ki tasveer aur awaaz scene prompts mein use hogi.</span>
+      </fieldset>
+    </div>
+
+    <div class="toggles">
+      <label class="toggle">
+        <input type="checkbox" id="voiceoverToggle" checked>
+        <span>Voice-over (narration + dialogue)</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="musicToggle" checked>
+        <span>Background music</span>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="estimateBtn" class="btn btn-secondary" type="button">Qeemat dekhein</button>
+      <button id="generateBtn" class="btn btn-primary" type="button">Video banayein</button>
+    </div>
+
+    <div id="estimateBox" class="card hidden" aria-live="polite"></div>
+    <div id="createError" class="error hidden" role="alert"></div>
+
+    <div id="jobBox" class="card hidden" aria-live="polite">
+      <h2>Job status</h2>
+      <p id="jobStatusText" class="muted">—</p>
+      <div class="progress"><div id="jobProgressBar" class="progress-bar" style="width:0%"></div></div>
+      <p id="jobStepText" class="muted">—</p>
+    </div>
+
+    <div id="resultBox" class="hidden" aria-live="polite"></div>
+    <p class="muted">Job complete hone par yahan storyboard aur <strong>Download</strong>
+      button dikhega — Demo Mode mein demo plan (NOT a video), asli video ke liye MP4.</p>
+  </section>
+
+  <!-- ================= PROJECTS ================= -->
+  <section id="tab-projects" class="panel" aria-label="Projects">
+    <h1>Projects</h1>
+    <p class="muted">Naye pehle. Project kholein to storyboard, Download aur delete milega.</p>
+    <p><button id="projectsRefreshBtn" class="btn btn-secondary" type="button">Refresh karein</button></p>
+    <div id="projectsList" class="list">Load ho raha hai…</div>
+    <div id="projectDetail" class="hidden"></div>
+  </section>
+
+  <!-- ================= CHARACTERS ================= -->
+  <section id="tab-characters" class="panel" aria-label="Characters">
+    <h1>Characters (Character Lock)</h1>
+    <p class="muted">Character ki tasveer, description aur awaaz save karein. Description
+      har scene ke video prompt mein lafz-ba-lafz repeat hoti hai — isi se
+      character har scene mein aik jaisa rehta hai.</p>
+
+    <form id="characterForm" class="card">
+      <label class="field">
+        <span class="label">Reference tasveer (gallery se chunein — PNG, JPG ya WebP)</span>
+        <input type="file" id="charImage" accept="image/png,image/jpeg,image/webp" required>
+        <img id="charPreview" class="preview hidden" alt="Character preview">
+      </label>
+      <label class="field">
+        <span class="label">Naam</span>
+        <input type="text" id="charName" class="input" maxlength="80" placeholder="Abdullah" required>
+      </label>
+      <label class="field">
+        <span class="label">Description (chehra, baal, kapde, body)</span>
+        <textarea id="charDescription" class="input" rows="3" maxlength="600" required
+          placeholder="Young man, black wavy hair, trimmed beard, black Levi's hoodie, blue jeans…"></textarea>
+      </label>
+      <div class="actions">
+        <button type="button" id="abdullahRealisticBtn" class="btn btn-secondary">Abdullah (Realistic) bharein</button>
+        <button type="button" id="abdullahCartoonBtn" class="btn btn-secondary">Abdullah (3D Cartoon) bharein</button>
+      </div>
+      <div class="grid2">
+        <label class="field">
+          <span class="label">Voice provider</span>
+          <select id="charVoiceProvider" class="input">
+            <option value="google-tts">Google TTS</option>
+            <option value="elevenlabs">ElevenLabs</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="label">Voice ID (optional)</span>
+          <input type="text" id="charVoiceId" class="input" maxlength="200" placeholder="ur-IN-Wavenet-B">
+        </label>
+      </div>
+      <label class="field">
+        <span class="label">Voice name / label (optional)</span>
+        <input type="text" id="charVoiceName" class="input" maxlength="120" placeholder="Abdullah — young male">
+      </label>
+      <p class="hint">Google TTS mein Urdu sirf <code>ur-IN</code> hai (<code>ur-PK</code> nahi).
+        Pakistani accent ke liye ElevenLabs chahiye.</p>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Character save karein</button>
+      </div>
+      <div id="charError" class="error hidden" role="alert"></div>
+      <div id="charSuccess" class="success hidden" role="status"></div>
+    </form>
+
+    <h2>Saved characters</h2>
+    <div id="charactersList" class="list">Load ho raha hai…</div>
+  </section>
+
+  <!-- ================= HISTORY ================= -->
+  <section id="tab-history" class="panel" aria-label="History">
+    <h1>History (Jobs)</h1>
+    <p class="muted">Haal ke jobs — status aur progress ke saath.</p>
+    <p><button id="historyRefreshBtn" class="btn btn-secondary" type="button">Refresh karein</button></p>
+    <div id="historyList" class="list">Load ho raha hai…</div>
+  </section>
+
+  <!-- ================= SETTINGS ================= -->
+  <section id="tab-settings" class="panel" aria-label="Settings">
+    <h1>Settings</h1>
+
+    <div class="card">
+      <h2>Backend connection</h2>
+      <label class="field">
+        <span class="label">Backend URL</span>
+        <input type="url" id="backendUrlInput" class="input" inputmode="url"
+          placeholder="https://abdullah-ai-video-studio.onrender.com">
+        <span class="hint">Khali chhorein to yehi website use hoti hai (same origin).
+          URL sirf is phone par save hoti hai (localStorage) — server ko nahi bheji jati.</span>
+      </label>
+      <div class="actions">
+        <button id="testConnectionBtn" class="btn btn-primary" type="button">Test Connection</button>
+      </div>
+      <div id="connectionResult" class="muted" aria-live="polite">Abhi tak test nahi hua.</div>
+    </div>
+
+    <div class="card">
+      <h2>Providers</h2>
+      <div id="providersList" class="list">Load ho raha hai…</div>
+      <p class="muted"><strong>Note:</strong> Veo 3.1 Preview band ho chuka hai (22 Oct 2026) —
+        Gemini API par current video model <code>gemini-omni-1.2-flash</code> hai.
+        Provider keys sirf server ki <code>.env</code> file mein lagti hain — is
+        website mein kahin bhi key ka field nahi hai, aur kabhi nahi hoga.</p>
+    </div>
+
+    <div class="card">
+      <h2>Defaults</h2>
+      <div id="settingsDefaults" class="muted">Load ho raha hai…</div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar" aria-label="Main navigation">
+  <button type="button" class="tab-btn active" data-tab="home">Home</button>
+  <button type="button" class="tab-btn" data-tab="create">Create</button>
+  <button type="button" class="tab-btn" data-tab="projects">Projects</button>
+  <button type="button" class="tab-btn" data-tab="characters">Characters</button>
+  <button type="button" class="tab-btn" data-tab="history">History</button>
+  <button type="button" class="tab-btn" data-tab="settings">Settings</button>
+</nav>
+
+<footer class="footer">
+  <p class="muted">Abdullah AI Video Studio — Demo Mode mein koi paisa kharch nahi hota.
+    Asli video ke liye provider key + billing chahiye (approval ke baad).</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
